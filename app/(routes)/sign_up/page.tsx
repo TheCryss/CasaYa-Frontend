@@ -1,4 +1,4 @@
-import SignUpForm from "../core/ui/components/sign_up/sign_up_form"
+import SignUpForm from "../../../components/features/SignUp/sign_up_form"
 
 export default function SignUpPage() {
     return (

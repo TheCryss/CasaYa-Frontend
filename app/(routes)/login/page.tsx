@@ -1,5 +1,5 @@
-import HeroImage from '../core/ui/components/landing/hero_login'
-import LoginForm from '../core/ui/components/landing/login_form'
+import HeroImage from '../../../components/features/LandingPage/hero_login'
+import LoginForm from '../../../components/features/LandingPage/login_form'
 
 
 export default function LoginPage() {
