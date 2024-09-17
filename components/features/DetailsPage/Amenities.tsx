@@ -1,11 +1,20 @@
-export default function Component() {
+interface AmenitiesProps {
+  type: string;
+  bathrooms: number;
+  bedrooms: number;
+  location: string;
+  price: string;
+  area: string;
+}
+
+export default function Amenities({ type, bathrooms, bedrooms, location, price, area }: AmenitiesProps) {
   const amenities = [
-    { name: 'Type: ', icon: '🏠' },
-    { name: 'Bathrooms: ', icon: '🚻' },
-    { name: 'Bedrooms: ', icon: '🛏️' },
-    { name: 'Place: ', icon: '📍' },
-    { name: 'Price: ', icon: '💰' },
-    { name: 'Area: ', icon: '📏' },
+    { name: `Type: ${type}`, icon: '🏠' },
+    { name: `Bathrooms: ${bathrooms}`, icon: '🚻' },
+    { name: `Bedrooms: ${bedrooms}`, icon: '🛏️' },
+    { name: `Place: ${location}`, icon: '📍' },
+    { name: `Price: ${price}`, icon: '💰' },
+    { name: `Area: ${area}`, icon: '📏' },
   ]
 
   return (

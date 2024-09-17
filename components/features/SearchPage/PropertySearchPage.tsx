@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Search } from 'lucide-react'
 import Image from 'next/image'
 
@@ -16,6 +16,7 @@ export default function PropertySearchPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [properties, setProperties] = useState<Property[]>([])
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -52,6 +53,10 @@ export default function PropertySearchPage() {
     property.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const handlePropertyClick = (id: number) => {
+    router.push(`/property/${id}`)
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <main className="container mx-auto px-4 py-8">
@@ -70,7 +75,11 @@ export default function PropertySearchPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProperties.map((property) => (
-            <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div
+              key={property.id}
+              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+              onClick={() => handlePropertyClick(property.id)}
+            >
               <Image
                 src={property.image}
                 alt={property.name}
