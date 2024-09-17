@@ -11,7 +11,7 @@ export default function Home() {
 
   return(
     <div className="min-h-screen bg-gray-100">
-      <Header isLoggedIn={auth?.isLoggedIn || false} userAvatar={auth?.userAvatar || undefined} />
+      <Header/>
       <main className="container mx-auto px-4 py-8">
         <PropertyTitle />
         <ImageGallery />

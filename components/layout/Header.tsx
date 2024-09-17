@@ -2,13 +2,11 @@ import { Bell, MessageCircle, Settings } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
+import { useAuth } from '../../contexts/AuthContext'
 
-interface HeaderProps {
-  isLoggedIn: boolean;
-  userAvatar?: string;
-}
+export default function Header() {
+  const { isLoggedIn, userAvatar } = useAuth()
 
-export default function Header({ isLoggedIn, userAvatar }: HeaderProps) {
   return (
     <header className="flex items-center justify-between p-4 bg-white border-b">
       <div className="flex items-center space-x-4">
