@@ -1,8 +1,48 @@
+"use client"
+
+import { useState } from 'react'
+import { useAuth } from '../../../contexts/AuthContext'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function LoginForm() {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const { login } = useAuth()
+    const router = useRouter()
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        const payload = {
+            email,
+            password,
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/users/auth/jwt/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const data = await response.json()
+            login(data.access)
+            router.push('/')
+        } catch (error) {
+            console.error('Error logging in:', error)
+            // Handle error (e.g., display error message to user)
+        }
+    }
+
     return (
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Username or email address
@@ -11,6 +51,8 @@ export default function LoginForm() {
                     type="email"
                     id="email"
                     name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
@@ -23,6 +65,8 @@ export default function LoginForm() {
                     type="password"
                     id="password"
                     name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
