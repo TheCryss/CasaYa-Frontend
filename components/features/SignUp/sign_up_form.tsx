@@ -19,10 +19,40 @@ export default function SignUpForm() {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        // Handle form submission here
-        console.log('Form submitted:', formData)
+
+        const payload = {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            address: '',
+            phone: '',
+            username: `${formData.firstName}${formData.lastName}`,
+            email: formData.email,
+            password: formData.password,
+            re_password: formData.password,
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/users/auth/users/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const data = await response.json()
+            console.log('Form submitted successfully:', data)
+            // Handle successful form submission (e.g., redirect to login page)
+        } catch (error) {
+            console.error('Error submitting form:', error)
+            // Handle error (e.g., display error message to user)
+        }
     }
 
     return (
