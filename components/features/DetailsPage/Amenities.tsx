@@ -1,11 +1,11 @@
 export default function Component() {
   const amenities = [
-    { name: 'Microwave', icon: '🔬' },
-    { name: 'Washer', icon: '🧺' },
-    { name: 'Dryer', icon: '👕' },
-    { name: 'Refrigerator', icon: '🧊' },
-    { name: 'Dishwasher', icon: '🍽️' },
-    { name: 'Balcony', icon: '🏞️' },
+    { name: 'Type: ', icon: '🏠' },
+    { name: 'Bathrooms: ', icon: '🚻' },
+    { name: 'Bedrooms: ', icon: '🛏️' },
+    { name: 'Place: ', icon: '📍' },
+    { name: 'Price: ', icon: '💰' },
+    { name: 'Area: ', icon: '📏' },
   ]
 
   return (

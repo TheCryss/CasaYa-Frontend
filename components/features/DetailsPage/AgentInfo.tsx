@@ -14,7 +14,7 @@ export default function Component() {
         />
         <div>
           <h3 className="font-bold">Samantha Smith</h3>
-          <p className="text-gray-600">415-555-1234</p>
+          <p className="text-gray-600">samantha@gmail.com</p>
         </div>
       </div>
       <div className="space-x-2">
