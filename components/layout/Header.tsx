@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function Header() {
-  const { isLoggedIn, userAvatar } = useAuth()
+  const { isLoggedIn, userAvatar, logout } = useAuth()
 
   return (
     <header className="flex items-center justify-between p-4 bg-white border-b">
@@ -17,11 +17,8 @@ export default function Header() {
       <div className="flex items-center space-x-4">
         {isLoggedIn ? (
           <>
-            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
+            <button className="p-2 rounded-full hover:bg-gray-100">
               <User className="w-6 h-6" />
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Sign out">
-              <LogOut className="w-6 h-6" />
             </button>
             {userAvatar && (
               <Image
@@ -32,6 +29,13 @@ export default function Header() {
                 className="rounded-full"
               />
             )}
+            <button
+              className="p-2 rounded-full hover:bg-gray-100"
+              aria-label="Sign out"
+              onClick={logout}
+            >
+              <LogOut className="w-6 h-6" />
+            </button>
           </>
         ) : (
           <>
