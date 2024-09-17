@@ -1,31 +1,27 @@
-import { Button } from "@/components/ui/button"
-import Image from 'next/image'
+// components/features/DetailsPage/AgentInfo.tsx
+import React from 'react'
 
 interface AgentInfoProps {
-  name: string;
-  email: string;
+  name: string
+  email: string
 }
 
-export default function AgentInfo({ name, email }: AgentInfoProps) {
+const AgentInfo: React.FC<AgentInfoProps> = ({ name, email }) => {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-4">
-        <Image
-          src="/placeholder.svg?height=50&width=50"
-          alt={name}
-          width={50}
-          height={50}
-          className="rounded-full"
+    <div className="bg-white shadow-md rounded-lg p-6 mt-6">
+      <div className="flex items-center">
+        <img
+          src="/images/user_profile.png"
+          alt="Agent Profile"
+          className="w-16 h-16 rounded-full mr-4"
         />
         <div>
-          <h3 className="font-bold">{name}</h3>
+          <h2 className="text-xl font-semibold">{name}</h2>
           <p className="text-gray-600">{email}</p>
         </div>
-      </div>
-      <div className="space-x-2">
-        <Button variant="outline">Request Info</Button>
-        <Button>Schedule Viewing</Button>
       </div>
     </div>
   )
 }
+
+export default AgentInfo
