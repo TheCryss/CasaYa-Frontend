@@ -1,10 +1,10 @@
 import Image from 'next/image'
 
 const options = [
-    { title: 'For sale', image: '/placeholder.svg?height=200&width=300' },
-    { title: 'For rent', image: '/placeholder.svg?height=200&width=300' },
-    { title: 'New construction', image: '/placeholder.svg?height=200&width=300' },
-    { title: 'Coming soon', image: '/placeholder.svg?height=200&width=300' },
+    { title: 'For sale', image: '/images/house_interior2.jpg?height=200&width=300' },
+    { title: 'For rent', image: '/images/house_interior3.jpg?height=200&width=300' },
+    { title: 'New construction', image: '/images/house_interior5.jpg?height=200&width=300' },
+    { title: 'Coming soon', image: '/images/house_futuristic1.jpg?height=200&width=300' },
 ]
 
 export default function ExploreOptions() {

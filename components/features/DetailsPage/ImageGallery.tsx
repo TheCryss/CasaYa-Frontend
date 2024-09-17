@@ -14,7 +14,7 @@ export default function Component() {
       </div>
       <div className="col-span-2">
         <Image
-          src="/images/house_interior.png?height=200&width=300"
+          src="/images/house_interior2.jpg?height=200&width=300"
           alt="Living Room"
           width={300}
           height={200}
@@ -23,7 +23,7 @@ export default function Component() {
       </div>
       <div>
         <Image
-          src="/images/house_interior.png?height=200&width=300"
+          src="/images/house_interior3.jpg?height=200&width=300"
           alt="Bedroom"
           width={300}
           height={200}
@@ -32,7 +32,7 @@ export default function Component() {
       </div>
       <div>
         <Image
-          src="/images/house_interior.png?height=200&width=300"
+          src="/images/house_interior4.jpg?height=200&width=300"
           alt="Balcony View"
           width={300}
           height={200}
