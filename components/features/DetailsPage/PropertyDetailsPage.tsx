@@ -81,6 +81,26 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     }
   }, [property, accessToken])
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/properties/${property?.id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `JWT ${accessToken}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete property')
+      }
+
+      // Redirect to the search page after successful deletion
+      router.push('/search')
+    } catch (error) {
+      console.error('Error deleting property:', error)
+    }
+  }
+
   if (!property) {
     return <div>Loading...</div>
   }
@@ -106,7 +126,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
       </main>
       <div className="fixed bottom-4 right-4 flex space-x-2">
         <button
-         aria-label="Edit property"
+          aria-label="Edit property"
           className="p-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200"
           onClick={() => router.push(`/edit/${property.id}`)}
         >
@@ -116,6 +136,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
         <button
           aria-label="Delete property"
           className="p-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200"
+          onClick={handleDelete}
         >
           <Trash2 size={24} />
         </button>
