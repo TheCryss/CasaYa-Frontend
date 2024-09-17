@@ -1,3 +1,5 @@
+"use client"
+
 import Header from "../../components/layout/Header"
 import Hero from "../../components/features/LandingPage/hero"
 import SearchBar from "../../components/features/LandingPage/search_bar"
