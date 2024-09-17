@@ -1,4 +1,4 @@
-import { Bell, MessageCircle, Settings } from 'lucide-react'
+import { User, LogOut } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
@@ -17,14 +17,11 @@ export default function Header() {
       <div className="flex items-center space-x-4">
         {isLoggedIn ? (
           <>
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <Bell className="w-6 h-6" />
+            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
+              <User className="w-6 h-6" />
             </button>
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <MessageCircle className="w-6 h-6" />
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <Settings className="w-6 h-6" />
+            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Sign out">
+              <LogOut className="w-6 h-6" />
             </button>
             {userAvatar && (
               <Image
