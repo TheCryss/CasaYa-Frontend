@@ -1,11 +1,63 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Header from '../../layout/Header'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export default function EditPropertyListing() {
+  const [property, setProperty] = useState(null)
   const [propertyType, setPropertyType] = useState('')
+  const router = useRouter()
+  const { id } = useParams()
+  const { accessToken } = useAuth()
+
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/properties/${id}/`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch property')
+        }
+        const data = await response.json()
+        setProperty(data)
+        setPropertyType(data.type)
+      } catch (error) {
+        console.error('Error fetching property:', error)
+      }
+    }
+
+    fetchProperty()
+  }, [id])
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.target)
+    const updatedProperty = Object.fromEntries(formData.entries())
+
+    try {
+      const response = await fetch(`http://localhost:8000/properties/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `JWT ${accessToken}`,
+        },
+        body: JSON.stringify(updatedProperty),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update property')
+      }
+
+      router.push(`/properties/${id}`)
+    } catch (error) {
+      console.error('Error updating property:', error)
+    }
+  }
+
+  if (!property) {
+    return <div>Loading...</div>
+  }
 
   const propertyTypes = [
     'Single family home', 'Townhouse', 'Condo', 'Apartment', 'Multi-family',
@@ -20,7 +72,7 @@ export default function EditPropertyListing() {
         <h1 className="text-3xl font-bold mb-2">Edit your property listing</h1>
         <p className="text-gray-600 mb-8">Make changes to your listing details</p>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <section className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Property type</h2>
             <div className="flex flex-wrap gap-2">
@@ -39,55 +91,23 @@ export default function EditPropertyListing() {
                 </button>
               ))}
             </div>
+            <input type="hidden" name="type" value={propertyType} />
           </section>
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Location</h2>
             <div className="space-y-4">
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Address
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
                 </label>
                 <input
                   type="text"
-                  id="address"
+                  id="location"
+                  name="location"
+                  defaultValue={property.location}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   placeholder="Enter the property address"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    id="state"
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    placeholder="State"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Zip code
-                </label>
-                <input
-                  type="text"
-                  id="zipcode"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Zip code"
                 />
               </div>
             </div>
@@ -97,25 +117,29 @@ export default function EditPropertyListing() {
             <h2 className="text-xl font-semibold mb-4">Price</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="listPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                   List price
                 </label>
                 <input
                   type="text"
-                  id="listPrice"
+                  id="price"
+                  name="price"
+                  defaultValue={property.price}
                   className="w-full p-2 border border-gray-300 rounded-md"
                   placeholder="$"
                 />
               </div>
               <div>
-                <label htmlFor="monthlyRent" className="block text-sm font-medium text-gray-700 mb-1">
-                  Monthly rent
+                <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">
+                  Area
                 </label>
                 <input
-                  type="text"
-                  id="monthlyRent"
+                  type="number"
+                  id="area"
+                  name="area"
+                  defaultValue={property.area}
                   className="w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="$"
+                  placeholder="Area in sq ft"
                 />
               </div>
             </div>
@@ -125,26 +149,43 @@ export default function EditPropertyListing() {
             <h2 className="text-xl font-semibold mb-4">Description</h2>
             <textarea
               id="description"
+              name="description"
               rows={4}
+              defaultValue={property.description}
               className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="Describe your property..."
             ></textarea>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Photos</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((index) => (
-                <div key={index} className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
-                  <Image
-                    src={`/placeholder.svg?height=300&width=400&text=Photo ${index}`}
-                    alt={`Property photo ${index}`}
-                    width={400}
-                    height={300}
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+            <h2 className="text-xl font-semibold mb-4">Rooms</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="rooms" className="block text-sm font-medium text-gray-700 mb-1">
+                  Bedrooms
+                </label>
+                <input
+                  type="number"
+                  id="rooms"
+                  name="rooms"
+                  defaultValue={property.rooms}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="Number of Bedrooms"
+                />
+              </div>
+              <div>
+                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-1">
+                  Bathrooms
+                </label>
+                <input
+                  type="number"
+                  id="bathrooms"
+                  name="bathrooms"
+                  defaultValue={property.bathrooms}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="Number of Bathrooms"
+                />
+              </div>
             </div>
           </section>
 
@@ -158,8 +199,9 @@ export default function EditPropertyListing() {
             <button
               type="button"
               className="text-red-600 hover:text-red-800 focus:outline-none"
+              onClick={() => router.push(`/properties/${id}`)}
             >
-              Delete listing
+              Cancel
             </button>
           </div>
         </form>
