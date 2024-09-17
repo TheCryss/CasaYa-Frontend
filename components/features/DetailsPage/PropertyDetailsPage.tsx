@@ -9,6 +9,7 @@ import Amenities from '../../../components/features/DetailsPage/Amenities'
 import AgentInfo from '../../../components/features/DetailsPage/AgentInfo'
 import ImageGallery from '../../../components/features/DetailsPage/ImageGallery'
 import { useAuth } from '../../../contexts/AuthContext'
+import { Pencil, Trash2 } from 'lucide-react'
 
 interface Property {
   id: number;
@@ -87,7 +88,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
   const userName = user ? `${user.first_name} ${user.last_name}` : '[Log in to see owner\'s information]'
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 relative">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <PropertyTitle name={property.name} price={property.price} location={property.location} />
@@ -103,6 +104,20 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
         />
         <AgentInfo name={userName} email={user?.email || '[Log in to see owner\'s information]'} />
       </main>
+      <div className="fixed bottom-4 right-4 flex space-x-2">
+        <button
+          aria-label="Edit property"
+          className="p-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200"
+        >
+          <Pencil size={24} />
+        </button>
+        <button
+          aria-label="Delete property"
+          className="p-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200"
+        >
+          <Trash2 size={24} />
+        </button>
+      </div>
     </div>
   )
 }
