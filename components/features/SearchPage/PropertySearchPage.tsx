@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from 'react'
-import { Search, User, LogOut } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Search } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 
 interface Property {
   id: number;
@@ -12,17 +12,40 @@ interface Property {
   image: string;
 }
 
-const properties: Property[] = [
-  { id: 1, name: "Cozy Cottage", description: "A charming cottage in the countryside", image: "/placeholder.svg?height=200&width=300&text=Cozy+Cottage" },
-  { id: 2, name: "Modern Apartment", description: "Sleek city living with great views", image: "/placeholder.svg?height=200&width=300&text=Modern+Apartment" },
-  { id: 3, name: "Seaside Villa", description: "Luxurious beachfront property", image: "/placeholder.svg?height=200&width=300&text=Seaside+Villa" },
-  { id: 4, name: "Mountain Retreat", description: "Secluded cabin with stunning vistas", image: "/placeholder.svg?height=200&width=300&text=Mountain+Retreat" },
-  { id: 5, name: "Urban Loft", description: "Industrial-chic space in the heart of downtown", image: "/placeholder.svg?height=200&width=300&text=Urban+Loft" },
-  { id: 6, name: "Suburban Family Home", description: "Spacious house perfect for families", image: "/placeholder.svg?height=200&width=300&text=Suburban+Family+Home" },
-]
-
 export default function PropertySearchPage() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [properties, setProperties] = useState<Property[]>([])
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/properties/')
+        if (!response.ok) {
+          throw new Error('Failed to fetch properties')
+        }
+        const data = await response.json()
+        const propertiesWithImages = data.map((property: any) => ({
+          id: property.id,
+          name: property.name,
+          description: property.description,
+          image: `/images/house_interior${Math.floor(Math.random() * 4) + 2}.jpg`, // Random image from 2 to 5
+        }))
+        setProperties(propertiesWithImages)
+      } catch (error) {
+        console.error('Error fetching properties:', error)
+      }
+    }
+
+    fetchProperties()
+  }, [])
+
+  useEffect(() => {
+    const term = searchParams.get('term')
+    if (term) {
+      setSearchTerm(term)
+    }
+  }, [searchParams])
 
   const filteredProperties = properties.filter(property =>
     property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -31,22 +54,6 @@ export default function PropertySearchPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            🏠 Nest Finder
-          </Link>
-          <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
-              <User className="w-6 h-6" />
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Sign out">
-              <LogOut className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="relative">
