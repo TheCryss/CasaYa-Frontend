@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SignUpForm() {
@@ -10,6 +11,8 @@ export default function SignUpForm() {
         email: '',
         password: '',
     })
+
+    const router = useRouter()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -48,7 +51,8 @@ export default function SignUpForm() {
 
             const data = await response.json()
             console.log('Form submitted successfully:', data)
-            // Handle successful form submission (e.g., redirect to login page)
+            // Redirect to landing page
+            router.push('/')
         } catch (error) {
             console.error('Error submitting form:', error)
             // Handle error (e.g., display error message to user)
