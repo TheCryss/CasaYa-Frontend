@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../contexts/AuthContext'
 import InputField from './InputField'
@@ -23,6 +23,35 @@ export default function PropertyForm() {
     description: '',
   })
 
+  const [userId, setUserId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/users/auth/users/me/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `JWT ${accessToken}`,
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user information')
+        }
+
+        const data = await response.json()
+        setUserId(data.id)
+      } catch (error) {
+        console.error('Error fetching user information:', error)
+      }
+    }
+
+    if (isLoggedIn) {
+      fetchUser()
+    }
+  }, [accessToken, isLoggedIn])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
@@ -39,6 +68,13 @@ export default function PropertyForm() {
       return
     }
 
+    if (userId === null) {
+      alert('User information is not available.')
+      return
+    }
+
+    console.log('Form Data:', formData) // Log formData to check if it's being updated correctly
+
     const payload = {
       name: formData.name,
       description: formData.description,
@@ -50,10 +86,10 @@ export default function PropertyForm() {
       bathrooms: formData.bathrooms,
       parking: 0, // Default value
       area: formData.area,
-      user: 1, // Replace with actual user ID from context
+      user: userId, // Use actual user ID from fetched data
     }
 
-    console.log(payload)
+    console.log('Payload:', payload) // Log payload to check if it's being created correctly
 
     try {
       const response = await fetch('http://localhost:8000/properties/', {
