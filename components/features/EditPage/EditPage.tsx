@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import Image from 'next/image'
 import Header from '../../layout/Header'
 import { useAuth } from '../../../contexts/AuthContext'
 
@@ -49,7 +50,8 @@ export default function EditPropertyListing() {
         throw new Error('Failed to update property')
       }
 
-      router.push(`/properties/${id}`)
+      // Redirect to the property details page after successful update
+      router.push(`/property/${id}`)
     } catch (error) {
       console.error('Error updating property:', error)
     }
@@ -189,6 +191,23 @@ export default function EditPropertyListing() {
             </div>
           </section>
 
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Photos</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((index) => (
+                <div key={index} className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+                  <Image
+                    src={`/placeholder.svg?height=300&width=400&text=Photo ${index}`}
+                    alt={`Property photo ${index}`}
+                    width={400}
+                    height={300}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+
           <div className="flex justify-between items-center">
             <button
               type="submit"
@@ -199,7 +218,7 @@ export default function EditPropertyListing() {
             <button
               type="button"
               className="text-red-600 hover:text-red-800 focus:outline-none"
-              onClick={() => router.push(`/properties/${id}`)}
+              onClick={() => router.push(`/property/${id}`)}
             >
               Cancel
             </button>
