@@ -37,6 +37,7 @@ interface User {
 export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
   const [property, setProperty] = useState<Property | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null)
   const { accessToken } = useAuth()
   const router = useRouter()
 
@@ -81,6 +82,28 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     }
   }, [property, accessToken])
 
+  useEffect(() => {
+    const fetchLoggedInUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/users/auth/users/me/', {
+          headers: {
+            'Authorization': `JWT ${accessToken}`,
+          },
+        })
+        if (!response.ok) {
+          throw new Error('Failed to fetch logged-in user')
+        }
+        const data = await response.json()
+        console.log('Logged-in user data:', data) // Debugging log
+        setLoggedInUser(data)
+      } catch (error) {
+        console.error('Error fetching logged-in user:', error)
+      }
+    }
+
+    fetchLoggedInUser()
+  }, [accessToken])
+
   const handleDelete = async () => {
     try {
       const response = await fetch(`http://localhost:8000/properties/${property?.id}/`, {
@@ -124,23 +147,25 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
         />
         <AgentInfo name={userName} email={user?.email || '[Log in to see owner\'s information]'} />
       </main>
-      <div className="fixed bottom-4 right-4 flex space-x-2">
-        <button
-          aria-label="Edit property"
-          className="p-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200"
-          onClick={() => router.push(`/edit/${property.id}`)}
-        >
-          <Pencil size={24} />
-        </button>
+      {loggedInUser?.id === property.user && (
+        <div className="fixed bottom-4 right-4 flex space-x-2">
+          <button
+            aria-label="Edit property"
+            className="p-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200"
+            onClick={() => router.push(`/edit/${property.id}`)}
+          >
+            <Pencil size={24} />
+          </button>
           
-        <button
-          aria-label="Delete property"
-          className="p-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200"
-          onClick={handleDelete}
-        >
-          <Trash2 size={24} />
-        </button>
-      </div>
+          <button
+            aria-label="Delete property"
+            className="p-3 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200"
+            onClick={handleDelete}
+          >
+            <Trash2 size={24} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
